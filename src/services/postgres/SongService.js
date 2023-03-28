@@ -5,6 +5,8 @@ class SongService {
   constructor() {
     this._pool = new Pool();
   }
+
+  async addSong()
 }
 
 module.exports = SongService;
