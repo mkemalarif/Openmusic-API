@@ -2,18 +2,21 @@ const {Pool} = require('pg');
 const {nanoid} = require('nanoid');
 const InvariantError = require('../../exceptions/InvariantError');
 const NotFoundError = require('../../exceptions/NotFoundError');
+const {mapAlbumsDB} = require('../../utils');
 
 class AlbumService {
   constructor() {
     this._pool = new Pool();
   }
 
-  async addAlbum({title, year}) {
+  async addAlbum({name, year}) {
     const id = nanoid(16);
+    const createdAt = new Date().toISOString();
+    const updatedAt = createdAt;
 
     const query = {
-      text: 'INSERT INTO albums VALUES ($1, $2, $3) RETURNING id',
-      values: [id, title, year],
+      text: 'INSERT INTO albums VALUES ($1, $2, $3, $4, $5) RETURNING id',
+      values: [id, name, year, createdAt, updatedAt],
     };
 
     const result = await this._pool.query(query);
@@ -27,7 +30,7 @@ class AlbumService {
 
   async getAlbumById(id) {
     const query = {
-      text: 'SELECT * FROM albums WHERE id = $1 RETURNING id',
+      text: 'SELECT * FROM albums WHERE id = $1',
       values: [id],
     };
 
@@ -37,13 +40,15 @@ class AlbumService {
       throw new NotFoundError('Album tidak ditemukan');
     }
 
-    return result.rows.map()[0];
+    return result.rows.map(mapAlbumsDB)[0];
   }
 
   async editAlbumById(id, {title, year}) {
+    const updateAt = new Date().toISOString();
     const query = {
-      text: 'UPDATE albums SET title = $1, year = $2 WHERE id =$3 RETURNING id',
-      values: [title, year, id],
+      text: 'UPDATE albums SET title = $1,' +
+      'year = $2, updated_at = $3 WHERE id =$4 RETURNING id',
+      values: [title, year, updateAt, id],
     };
 
     const result = await this._pool.query(query);

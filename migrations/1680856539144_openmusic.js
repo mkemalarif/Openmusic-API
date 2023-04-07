@@ -1,12 +1,10 @@
 /* eslint-disable camelcase */
-
-exports.shorthands = undefined;
-
 exports.up = (pgm) => {
   pgm.createTable('albums', {
     id: {
       type: 'VARCHAR(50)',
       primaryKey: true,
+      onDelete: 'CASCADE',
     },
     name: {
       type: 'TEXT',
@@ -15,6 +13,14 @@ exports.up = (pgm) => {
     year: {
       type: 'INTEGER',
       notNull: 'true',
+    },
+    created_at: {
+      type: 'TEXT',
+      notNull: true,
+    },
+    updated_at: {
+      type: 'TEXT',
+      notNull: true,
     },
   });
   pgm.createTable('songs', {
@@ -44,7 +50,18 @@ exports.up = (pgm) => {
       references: '"albums"',
       onDelete: 'CASCADE',
     },
+    created_at: {
+      type: 'TEXT',
+      notNull: true,
+    },
+    updated_at: {
+      type: 'TEXT',
+      notNull: true,
+    },
   });
 };
 
-exports.down = (pgm) => {};
+exports.down = (pgm) => {
+  pgm.dropTable('albums', {ifExists: true});
+  pgm.dropTable('songs', {ifExists: true});
+};
