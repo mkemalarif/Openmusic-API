@@ -57,6 +57,7 @@ class AlbumsHandler {
         },
       };
     } catch (error) {
+      console.log(error);
       if (error instanceof ClientError) {
         const response = h.response({
           status: 'fail',
@@ -105,14 +106,15 @@ class AlbumsHandler {
   async deleteAlbumByIdHandler(request, h) {
     try {
       const {id} = request.params;
-      await this._service.deleteNoteById(id);
+      await this._service.deleteAlbumById(id);
 
       return {
         status: 'success',
-        message: 'Catatan berhasil dihapus',
+        message: 'Album berhasil dihapus',
       };
     } catch (error) {
-      if (Error instanceof ClientError) {
+      console.log(error);
+      if (error instanceof ClientError) {
         const response = h.response({
           status: 'fail',
           message: error.message,
