@@ -40,15 +40,13 @@ exports.up = (pgm) => {
       type: 'TEXT',
       notNull: true,
     },
+    genre: {
+      type: 'TEXT',
+      notNull: false,
+    },
     duration: {
       type: 'INTEGER',
       notNull: false,
-    },
-    albumId: {
-      type: 'VARCHAR(50)',
-      notNull: false,
-      references: '"albums"',
-      onDelete: 'CASCADE',
     },
     created_at: {
       type: 'TEXT',
@@ -58,10 +56,16 @@ exports.up = (pgm) => {
       type: 'TEXT',
       notNull: true,
     },
+    albumId: {
+      type: 'VARCHAR(50)',
+      notNull: false,
+      references: '"albums"',
+      onDelete: 'CASCADE',
+    },
   });
 };
 
 exports.down = (pgm) => {
-  pgm.dropTable('albums', {ifExists: true});
   pgm.dropTable('songs', {ifExists: true});
+  pgm.dropTable('albums', {ifExists: true});
 };

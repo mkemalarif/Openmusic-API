@@ -2,7 +2,7 @@ const {Pool} = require('pg');
 const {nanoid} = require('nanoid');
 const InvariantError = require('../../exceptions/InvariantError');
 const NotFoundError = require('../../exceptions/NotFoundError');
-const {mapAlbumsDB} = require('../../utils');
+const {mapSongDB} = require('../../utils');
 
 class SongService {
   constructor() {
@@ -17,8 +17,8 @@ class SongService {
     const query = {
       text: 'INSERT INTO songs VALUES(' +
       '$1, $2, $3, $4, $5, $6, $7, $8) RETURNING id',
-      values: [id, title, year, genre,
-        performer, duration, createdAt, updateAt],
+      values: [id, title, year, performer, genre,
+        duration, createdAt, updateAt],
     };
 
     const result = await this._pool.query(query);
@@ -30,9 +30,10 @@ class SongService {
     return result.rows[0].id;
   }
 
-  async getSongs() {
-    const result = await this._pool.query('SELECT * FROM songs');
-    return result.rows.map(mapAlbumsDB);
+  async getSongs(query) {
+    const result = await this._pool.query(
+        'SELECT id, title, performer FROM songs');
+    return result.rows.map(mapSongDB);
   }
 
   async getSongById(id) {
@@ -47,16 +48,16 @@ class SongService {
       throw new NotFoundError('Lagu tidak ditemukan');
     }
 
-    return result.rows.map(mapAlbumsDB);
+    return result.rows.map(mapSongDB)[0];
   }
 
-  async editSongById(id, {title, year, genre, performer, duration}) {
+  async editSongById(id, {title, year, performer, genre, duration}) {
     const updateAt = new Date().toISOString();
     const query = {
-      text: 'UPDATE songs SET title = $1' +
-      'year = $2, genre = $3, performer = 4, duration = $5' +
-      'update_at = $6 WHERE id = $7 RETURNING id',
-      values: [title, year, genre, performer, duration, updateAt, id],
+      text: 'UPDATE songs SET title = $1,' +
+      'year = $2, performer = $3, genre = $4, duration = $5,' +
+      'updated_at = $6 WHERE id = $7 RETURNING id',
+      values: [title, year, performer, genre, duration, updateAt, id],
     };
 
     const result = await this._pool.query(query);

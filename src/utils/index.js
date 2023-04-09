@@ -20,7 +20,6 @@ const mapSongDB = ({
   genre,
   performer,
   duration,
-  albumId,
   created_at,
   updated_at,
 }) => ({
@@ -30,7 +29,6 @@ const mapSongDB = ({
   genre,
   performer,
   duration,
-  albumId,
   createdAt: created_at,
   updatedAt: updated_at,
 });
