@@ -27,21 +27,7 @@ class AlbumsHandler {
       response.code(201);
       return response;
     } catch (error) {
-      if (error instanceof ClientError) {
-        const response = h.response({
-          status: 'fail',
-          message: error.message,
-        });
-        response.code(error.statusCode);
-        return response;
-      }
-
-      const response = h.response({
-        status: 'fail',
-        message: 'Maaf, terjadi kegagalan pada server kami.',
-      });
-      response.code(500);
-      return response;
+      throw new ClientError(error.message, error.statusCode);
     }
   }
 
@@ -57,21 +43,7 @@ class AlbumsHandler {
         },
       };
     } catch (error) {
-      console.log(error);
-      if (error instanceof ClientError) {
-        const response = h.response({
-          status: 'fail',
-          message: error.message,
-        });
-        response.code(error.statusCode);
-        return response;
-      }
-      const response = h.response({
-        status: 'fail',
-        message: 'Maaf, terjadi kegagalan pada server kami.',
-      });
-      response.code(500);
-      return response;
+      throw new ClientError(error.message, error.statusCode);
     }
   }
 
@@ -86,20 +58,7 @@ class AlbumsHandler {
         message: 'Album berhasil diperbarui',
       };
     } catch (error) {
-      if (error instanceof ClientError) {
-        const response = h.response({
-          status: 'fail',
-          message: error.message,
-        });
-        response.code(error.statusCode);
-        return response;
-      }
-      const response = h.response({
-        status: 'fail',
-        message: 'Maaf, terjadi kegagalan pada server kami.',
-      });
-      response.code(500);
-      return response;
+      throw new ClientError(error.message, error.statusCode);
     }
   }
 
@@ -113,22 +72,7 @@ class AlbumsHandler {
         message: 'Album berhasil dihapus',
       };
     } catch (error) {
-      console.log(error);
-      if (error instanceof ClientError) {
-        const response = h.response({
-          status: 'fail',
-          message: error.message,
-        });
-        response.code(error.statusCode);
-        return response;
-      }
-
-      const response = h.response({
-        status: 'fail',
-        message: 'Maaf, terjadi kegagalan pada server kami.',
-      });
-      response.code(500);
-      return response;
+      throw new ClientError(error.message, error.statusCode);
     }
   }
 }
