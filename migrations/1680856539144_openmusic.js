@@ -27,6 +27,7 @@ exports.up = (pgm) => {
     id: {
       type: 'VARCHAR(50)',
       notNull: true,
+      primaryKey: true,
     },
     title: {
       type: 'TEXT',
@@ -66,6 +67,10 @@ exports.up = (pgm) => {
 };
 
 exports.down = (pgm) => {
-  pgm.dropTable('songs', {ifExists: true});
-  pgm.dropTable('albums', {ifExists: true});
+  pgm.dropTable('playlist_songs');
+  pgm.dropTable('songs');
+  pgm.dropTable('playlist');
+  pgm.dropTable('users');
+  pgm.dropTable('albums');
+  pgm.dropTable('authentications');
 };
