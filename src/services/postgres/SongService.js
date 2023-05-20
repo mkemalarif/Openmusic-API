@@ -9,16 +9,16 @@ class SongService {
     this._pool = new Pool();
   }
 
-  async addSong({title, year, genre, performer, duration}) {
+  async addSong({title, year, genre, performer, duration, albumId}) {
     const id = nanoid(16);
     const createdAt = new Date().toISOString();
     const updateAt = createdAt;
 
     const query = {
       text: 'INSERT INTO songs VALUES(' +
-      '$1, $2, $3, $4, $5, $6, $7, $8) RETURNING id',
+      '$1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id',
       values: [id, title, year, performer, genre,
-        duration, createdAt, updateAt],
+        duration, createdAt, updateAt, albumId],
     };
 
     const result = await this._pool.query(query);
@@ -32,7 +32,50 @@ class SongService {
 
   async getSongs() {
     const result = await this._pool.query(
-        'SELECT id, title, performer FROM songs');
+        `SELECT id, title, performer FROM songs`);
+    return result.rows.map(mapSongDB);
+  }
+  async getSongsByTitle(title) {
+    const query = {
+      text: `SELECT id, title, performer 
+      FROM songs WHERE LOWER(title) LIKE $1`,
+      values: [`%${title}%`],
+    };
+    const result = await this._pool.query(query);
+    return result.rows.map(mapSongDB);
+  }
+  async getSongsByPerformer(performer) {
+    const query = {
+      text: `SELECT id, title, performer
+      FROM songs WHERE LOWER(performer) LIKE $1`,
+      values: [`%${performer}%`],
+    };
+    const result = await this._pool.query(query);
+    return result.rows.map(mapSongDB);
+  }
+
+  async getSongsByQuery(title, performer) {
+    const query = {
+      text: `SELECT id, title, performer
+      FROM songs WHERE LOWER(title) LIKE $1
+      AND LOWER(performer) LIKE $2`,
+      values: [`%${title}%`, `%${performer}%`],
+    };
+    const result = await this._pool.query(query);
+    return result.rows.map(mapSongDB);
+  }
+
+  async getSongAlbum(id) {
+    const query = {
+      text: `SELECT albums.id, albums.name, albums.year,
+      songs.* FROM albums INNER JOIN songs 
+      ON songs.album_id = albums.id
+      WHERE albums.id = $1`,
+      values: [id],
+    };
+
+    const result = await this._pool.query(query);
+
     return result.rows.map(mapSongDB);
   }
 

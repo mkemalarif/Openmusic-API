@@ -22,6 +22,7 @@ const mapSongDB = ({
   duration,
   created_at,
   updated_at,
+  album_id,
 }) => ({
   id,
   title,
@@ -31,6 +32,7 @@ const mapSongDB = ({
   duration,
   createdAt: created_at,
   updatedAt: updated_at,
+  albumId: album_id,
 });
 
 module.exports = {mapAlbumsDB, mapSongDB};

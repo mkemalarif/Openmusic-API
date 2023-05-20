@@ -1,8 +1,9 @@
 const ClientError = require('../../exceptions/ClientError');
 
 class AlbumsHandler {
-  constructor(service, validator) {
+  constructor(service, song, validator) {
     this._service = service;
+    this._song = song;
     this._validator = validator;
 
     this.postAlbumHandler = this.postAlbumHandler.bind(this);
@@ -35,6 +36,8 @@ class AlbumsHandler {
     try {
       const {id} = request.params;
       const album = await this._service.getAlbumById(id);
+      const songs = await this._song.getSongAlbum(id);
+      album.songs = songs;
 
       return {
         status: 'success',
@@ -43,6 +46,7 @@ class AlbumsHandler {
         },
       };
     } catch (error) {
+      console.log(error);
       throw new ClientError(error.message, error.statusCode);
     }
   }
